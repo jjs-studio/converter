@@ -1,0 +1,122 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#121417">
+  <title>JJS Studio</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-192.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans:wght@400;500;650&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div class="app">
+    <header class="topbar">
+      <div class="logo" aria-hidden="true"></div>
+      <div class="brand">JJS Studio <small>Particle converter</small></div>
+      <div class="spacer"></div>
+      <label class="btn file-btn">Open place
+        <input id="fileInput" type="file" accept=".rbxl,.rbxlx,.rbxm,.rbxmx">
+      </label>
+      <button class="btn primary" id="exportBtn">Export selection</button>
+    </header>
+
+    <main class="workspace">
+      <aside class="panel">
+        <h2>Explorer · <span id="explorerPath">Workspace</span></h2>
+        <input class="search" id="search" placeholder="Search name, class, texture id">
+        <div class="tree" id="tree"></div>
+      </aside>
+
+      <section class="viewport">
+        <div class="scene">
+          <div class="floor"></div>
+          <div class="cube">
+            <div class="face f"></div><div class="face b"></div>
+            <div class="face l"></div><div class="face r"></div>
+            <div class="face u"></div><div class="face d"></div>
+          </div>
+        </div>
+        <div class="hud">
+          <div id="hudTitle">No place loaded</div>
+          <div class="hint" id="hudMeta">Drop a Roblox place or model to convert ParticleEmitters into JJS import codes.</div>
+        </div>
+        <div class="empty" id="emptyState">
+          <div>
+            <strong>Studio viewport</strong>
+            Open an .rbxl / .rbxm — the explorer fills like Workspace.
+          </div>
+        </div>
+      </section>
+
+      <aside class="panel right">
+        <h2>Properties</h2>
+        <div class="props">
+          <div>
+            <label>Skill name</label>
+            <input class="field" id="skillName" value="converted">
+          </div>
+          <div class="pair">
+            <div>
+              <label>Key</label>
+              <input class="field" id="skillKey" type="number" value="1">
+            </div>
+            <div>
+              <label>Duration</label>
+              <input class="field" id="duration" type="number" min="0" step="0.1" value="0">
+            </div>
+          </div>
+          <div>
+            <label>Position</label>
+            <input class="field" id="position" value="0, 0, 0">
+          </div>
+          <label style="display:flex;gap:8px;align-items:center;text-transform:none;letter-spacing:0">
+            <input id="recolor" type="checkbox"> Recolor Main / Accent / Other
+          </label>
+          <div id="recolorBox" style="opacity:.45">
+            <div class="pair" style="grid-template-columns:auto 1fr;align-items:center;margin-bottom:6px">
+              <input id="mainColor" type="color" value="#ff3355"><input class="field" id="mainHex" value="#ff3355">
+            </div>
+            <div class="pair" style="grid-template-columns:auto 1fr;align-items:center;margin-bottom:6px">
+              <input id="accentColor" type="color" value="#ffcc66"><input class="field" id="accentHex" value="#ffcc66">
+            </div>
+            <div class="pair" style="grid-template-columns:auto 1fr;align-items:center">
+              <input id="otherColor" type="color" value="#ffffff"><input class="field" id="otherHex" value="#ffffff">
+            </div>
+          </div>
+          <p class="hint">Duration and position are written onto every emitter. They are not stored in the place file.</p>
+          <label>JSON</label>
+          <div class="output" id="output"></div>
+          <div class="actions" style="justify-content:flex-start">
+            <button class="btn" id="copyJson">Copy JSON</button>
+            <button class="btn" id="dlJson">Download JSON</button>
+          </div>
+          <label>Compact import (KLUv)</label>
+          <div class="output" id="compactOut"></div>
+          <div class="actions" style="justify-content:flex-start">
+            <button class="btn" id="copyCompact">Copy compact</button>
+            <button class="btn" id="dlCompact">Download compact</button>
+          </div>
+        </div>
+      </aside>
+    </main>
+
+    <footer class="status">
+      <span id="selCount">0 emitters</span>
+      <span id="statusText">Ready</span>
+    </footer>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/pako@2.1.0/dist/pako.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fzstd@0.1.1/umd/index.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/zstd-codec@0.1.4/dist/bundle.js"></script>
+  <script src="parser.js"></script>
+  <script src="app.js"></script>
+  <script>
+    if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js');
+  </script>
+</body>
+</html>
